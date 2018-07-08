@@ -17,7 +17,9 @@ public class LinkGetter {
 	public static final String TABLE_PAGE_2 = "/html/body/div[2]/table[2]/tbody/tr/td[1]/table/tbody/tr[%d]/td[%d]/div[2]";
 	public static final String TABLE_IMG_1 = "/html/body/div[2]/table[1]/tbody/tr/td[%d]/a/img[1]";
 	public static final String TABLE_IMG_2 = "/html/body/div[2]/table[2]/tbody/tr/td[1]/table/tbody/tr[%d]/td[%d]/a/img[1]";
-	public static final String LINK_FILE = "D:/27052018.txt";
+	public static final String LINK_FILE = "D:/24062018.txt";
+	public static final String LINK_ZIP = "D:/zip.txt";
+	public static final String LINK_MEGA = "D:/mega.txt";
 
 	public static void getLink(String beforeManga) throws InterruptedException {
 		System.setProperty("webdriver.gecko.driver", "E:\\Java Libs\\geckodriver.exe");
@@ -84,15 +86,22 @@ public class LinkGetter {
 		}
 	}
 
-	public static void getMegaManga(String linkFile, String filePath) {
+	public static void getLackLinkMega(String linkFile, String filePath) {
 		try (BufferedReader br = new BufferedReader(new FileReader(linkFile))) {
 			String line = "";
 			int total = 0;
 			while ((line = br.readLine()) != null) {
 				if (line.startsWith("https:")) {
-					if (total >= 100) {
-						FileHelper.writeFile("" + total, filePath);
-						FileHelper.writeFile(line, filePath);
+					File file = new File(filePath + line.split("/")[8]);
+					if (!file.exists()) {
+						System.out.println(total);
+						System.out.println(line);
+					} else {
+						int realTotal = file.listFiles().length;
+						if (realTotal < total - 5) {
+							System.out.println(total);
+							System.out.println(line);
+						}
 					}
 				} else {
 					total = Integer.parseInt(line);
@@ -103,7 +112,59 @@ public class LinkGetter {
 		}
 	}
 
+	public static void splitLink(String linkFile) {
+		try (BufferedReader br = new BufferedReader(new FileReader(linkFile))) {
+			String line = "";
+			int total = 0;
+			while ((line = br.readLine()) != null) {
+				if (line.startsWith("https:")) {
+					if (total >= 100) {
+						line = line.replaceAll("/manga/", "/ui2/%s/iuI/manga/").replaceAll(".jpg", "");
+						FileHelper.writeFile("" + total + "\n", LINK_MEGA);
+						FileHelper.writeFile(line + "\n", LINK_MEGA);
+					} else {
+						line = line.replaceAll("/manga/", "/D.php?m=").replaceAll("/0.jpg", "&o=");
+						FileHelper.writeFile("" + total + "\n", LINK_ZIP);
+						FileHelper.writeFile(line + "\n", LINK_ZIP);
+					}
+				} else {
+					total = Integer.parseInt(line.split(" ")[0]);
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void removeDuplicateLink(String filePath) {
+		try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+			String line = "";
+			int total = 0;
+			String beforeLine = "";
+			while ((line = br.readLine()) != null) {
+				if (line.startsWith("https:")) {
+					if (!line.equalsIgnoreCase(beforeLine)) {
+						FileHelper.writeFile(total + "\n", "D:/revoveDuplicateFile.txt");
+						FileHelper.writeFile(line + "\n", "D:/revoveDuplicateFile.txt");
+					}
+					beforeLine = line;
+				} else {
+					total = Integer.parseInt(line.split(" ")[0]);
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public static void main(String[] args) throws InterruptedException {
-		getMegaManga("D:/new_file.txt", "D:/mega_manga.txt");
+//		removeDuplicateLink(LINK_ZIP);
+		// getMegaManga("D:/new_file.txt", "D:/mega_manga.txt");
+		// getLackLinkMega("D:/link_1.txt", "G:\\Manga\\Download\\Mega\\");
+		// getLackLinkMega("D:/link_2.txt", "G:\\Manga\\Download\\Mega\\");
+		 getLackLink("D:/link_1.txt", "G:\\Manga\\Download\\Zip\\");
+//		 getLackLink("D:/link_2.txt", "G:\\Manga\\Download\\Zip\\");
+		// splitLink(LINK_FILE);
+		// getLink("Original_Sekigahara-Shouji-Hitodumabu-Ch1");
 	}
 }

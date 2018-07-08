@@ -6,26 +6,19 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Date;
 import java.util.List;
 
-import javax.imageio.ImageIO;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
-
-import utils.Test;
 
 public class AutoDownload {
 	public static final String HTML_TAG = "<a href=\"%s\" rel=\"nofollow\">Download %d <br></a>";
@@ -61,7 +54,7 @@ public class AutoDownload {
 			while ((line = br.readLine()) != null) {
 				if (line.startsWith("https:")) {
 					if (total < 100 && total > 12) {
-						long currentDate = new Date().getTime() / 1000 + i * 5 + 2;
+						long currentDate = new Date().getTime() / 1000 + i * 6 + 2;
 						line += currentDate;
 						result += String.format(HTML_TAG, line, i);
 						i++;
@@ -107,20 +100,100 @@ public class AutoDownload {
 		for (WebElement element2 : listLinks) {
 			System.out.println(i);
 			element2.click();
-			// Thread.sleep(1000);
+			 Thread.sleep(1000);
 			i++;
 		}
 	}
 
-	public static void main(String[] args) throws InterruptedException {
-		downZipFile("d:/link 1.txt", "E:\\New folder\\Manga_1");
-		// for (int i = 1; i < 10; i++) {
-		// try {
-		// downZipFile("d:/link " + i + ".txt", "E:\\New folder\\Manga_" + i);
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// }
-		// }
-		// downZipFile("d:/test.txt");
+	public static void downLoadMegaFromLink(String link, int total, String folder)
+			throws InterruptedException, AWTException {
+		File directory = new File(folder);
+		if (!directory.exists()) {
+			directory.mkdir();
+		}
+		System.setProperty("webdriver.gecko.driver", "E:\\Java Libs\\geckodriver.exe");
+		FirefoxProfile fxProfile = new FirefoxProfile();
+
+		fxProfile.setPreference("browser.download.folderList", 2);
+		fxProfile.setPreference("browser.download.manager.showWhenStarting", false);
+		fxProfile.setPreference("browser.download.dir", folder);
+		fxProfile.setPreference("browser.helperApps.neverAsk.saveToDisk", "image/jpg");
+		FirefoxOptions options = new FirefoxOptions();
+		options.setProfile(fxProfile);
+		FirefoxDriver driver = new FirefoxDriver(options);
+
+		driver.get("https://www.load.la/");
+		Thread.sleep(5000);
+		WebElement element = driver.findElement(By.tagName("body"));
+
+		String newBody = "";
+		String img_tag = "<a href=\"%s\" download=\"\">IMG %d</a>";
+		for (int i = 0; i < total; i++) {
+			String temp = String.format(link, (new Date().getTime() + i * 500) / 1000) + i;
+			newBody += String.format(img_tag, temp, i);
+		}
+		((JavascriptExecutor) driver)
+				.executeScript("var ele=arguments[0]; ele.innerHTML = '<body>" + newBody + "</body>';", element);
+
+		Thread.sleep(2000);
+		List<WebElement> listLinks = driver.findElements(By.tagName("a"));
+		for (WebElement element2 : listLinks) {
+			try {
+				element2.click();
+			} catch (Exception e) {
+			}
+			Thread.sleep(500);
+		}
+		Thread.sleep(10000);
+		driver.quit();
 	}
+
+	public static void downloadMegaFromFile(String filePath, String folder) throws InterruptedException, AWTException {
+		try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+			String line = "";
+			int total = 0;
+			while ((line = br.readLine()) != null) {
+				if (line.startsWith("https:")) {
+					try {
+						System.out.println(line);
+						downLoadMegaFromLink(line, total, folder + line.split("/")[8]);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				} else {
+					total = Integer.parseInt(line);
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void main(String[] args) throws InterruptedException, AWTException, IOException {
+		// downZipFile("d:/link 1.txt", "E:\\New folder\\Manga_1");
+		Thread thread1 = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					// downloadMegaFromFile("D:/link_1.txt", "G:\\Manga\\Download\\Mega\\");
+					downZipFile("D:/link_1.txt", "G:\\Manga\\Download\\Zip\\");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		Thread thread2 = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					downZipFile("D:/link_2.txt", "G:\\Manga\\Download\\Zip\\");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		thread1.start();
+		thread2.start();
+	}
+
 }

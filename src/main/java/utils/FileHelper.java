@@ -8,7 +8,7 @@ public class FileHelper {
 	public static void writeFile(String content, String filePath) {
 		try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath, true))) {
 			bw.write(content);
-			bw.newLine();
+//			bw.newLine();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
