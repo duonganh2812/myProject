@@ -17,7 +17,7 @@ public class LinkGetter {
 	public static final String TABLE_PAGE_2 = "/html/body/div[2]/table[2]/tbody/tr/td[1]/table/tbody/tr[%d]/td[%d]/div[2]";
 	public static final String TABLE_IMG_1 = "/html/body/div[2]/table[1]/tbody/tr/td[%d]/a/img[1]";
 	public static final String TABLE_IMG_2 = "/html/body/div[2]/table[2]/tbody/tr/td[1]/table/tbody/tr[%d]/td[%d]/a/img[1]";
-	public static final String LINK_FILE = "D:/24062018.txt";
+	public static final String LINK_FILE = "D:/12072018.txt";
 	public static final String LINK_ZIP = "D:/zip.txt";
 	public static final String LINK_MEGA = "D:/mega.txt";
 
@@ -158,13 +158,13 @@ public class LinkGetter {
 	}
 
 	public static void main(String[] args) throws InterruptedException {
-//		removeDuplicateLink(LINK_ZIP);
+//		removeDuplicateLink(LINK_FILE);
 		// getMegaManga("D:/new_file.txt", "D:/mega_manga.txt");
-		// getLackLinkMega("D:/link_1.txt", "G:\\Manga\\Download\\Mega\\");
-		// getLackLinkMega("D:/link_2.txt", "G:\\Manga\\Download\\Mega\\");
-		 getLackLink("D:/link_1.txt", "G:\\Manga\\Download\\Zip\\");
+//		 getLackLinkMega("D:/link_1.txt", "G:\\Manga\\Download\\Mega\\");
+//		 getLackLinkMega("D:/link_2.txt", "G:\\Manga\\Download\\Mega\\");
+//		 getLackLink("D:/link_1.txt", "G:\\Manga\\Download\\Zip\\");
 //		 getLackLink("D:/link_2.txt", "G:\\Manga\\Download\\Zip\\");
-		// splitLink(LINK_FILE);
-		// getLink("Original_Sekigahara-Shouji-Hitodumabu-Ch1");
+//		 splitLink(LINK_FILE);
+//		 getLink("Fate-Grand-Order_Raikou-MamaAaAAaAAAaaA");
 	}
 }

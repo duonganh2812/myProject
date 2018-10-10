@@ -83,7 +83,7 @@ public class AutoDownload {
 
 		driver.get("https://www.load.la/");
 		Thread.sleep(5000);
-		driver.findElement(By.xpath("/html/body/div[2]/table[1]/tbody/tr/td[1]/a")).click();
+		driver.findElement(By.xpath("/html/body/div[2]/table[1]/tbody/tr/td[2]/a")).click();
 		Thread.sleep(2000);
 		driver.findElement(By.linkText("DOWNLOAD")).click();
 		Thread.sleep(2000);
@@ -175,7 +175,7 @@ public class AutoDownload {
 			@Override
 			public void run() {
 				try {
-					// downloadMegaFromFile("D:/link_1.txt", "G:\\Manga\\Download\\Mega\\");
+//					 downloadMegaFromFile("D:/link_1.txt", "G:\\Manga\\Download\\Mega\\");
 					downZipFile("D:/link_1.txt", "G:\\Manga\\Download\\Zip\\");
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -186,6 +186,7 @@ public class AutoDownload {
 			@Override
 			public void run() {
 				try {
+//					downloadMegaFromFile("D:/link_2.txt", "G:\\Manga\\Download\\Mega\\");
 					downZipFile("D:/link_2.txt", "G:\\Manga\\Download\\Zip\\");
 				} catch (Exception e) {
 					e.printStackTrace();
