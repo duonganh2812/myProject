@@ -65,7 +65,6 @@ public class LinkGetter {
 		}
 		try (BufferedReader br = new BufferedReader(new FileReader(linkFile))) {
 			String line = "";
-			int i = 0;
 			int total = 0;
 			while ((line = br.readLine()) != null) {
 				if (line.startsWith("https:")) {
