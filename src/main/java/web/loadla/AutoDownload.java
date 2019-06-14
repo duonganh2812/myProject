@@ -53,8 +53,8 @@ public class AutoDownload {
 			int total = 0;
 			while ((line = br.readLine()) != null) {
 				if (line.startsWith("https:")) {
-					if (total < 100 && total > 12) {
-						long currentDate = new Date().getTime() / 1000 + i * 6 + 2;
+					if (total < 100) {
+						long currentDate = new Date().getTime() / 1000 + i * 4;
 						line += currentDate;
 						result += String.format(HTML_TAG, line, i);
 						i++;
@@ -70,7 +70,7 @@ public class AutoDownload {
 	}
 
 	public static void downZipFile(String linkFile, String folder) throws InterruptedException {
-		System.setProperty("webdriver.gecko.driver", "E:\\Java Libs\\geckodriver.exe");
+		System.setProperty("webdriver.gecko.driver", "driver\\geckodriver.exe");
 		FirefoxProfile fxProfile = new FirefoxProfile();
 
 		fxProfile.setPreference("browser.download.folderList", 2);
@@ -89,18 +89,17 @@ public class AutoDownload {
 		Thread.sleep(2000);
 		WebElement element = driver.findElement(By.tagName("body"));
 
-		for (int i = 0; i < 1; i++) {
-			String newBody = getNewBody(linkFile);
-			((JavascriptExecutor) driver)
-					.executeScript("var ele=arguments[0]; ele.innerHTML = '<body>" + newBody + "</body>';", element);
-		}
+		String newBody = getNewBody(linkFile);
+		System.out.println(newBody);
+		((JavascriptExecutor) driver)
+				.executeScript("var ele=arguments[0]; ele.innerHTML = '<body>" + newBody + "</body>';", element);
 		Thread.sleep(2000);
 		List<WebElement> listLinks = driver.findElements(By.tagName("a"));
 		int i = 0;
 		for (WebElement element2 : listLinks) {
 			System.out.println(i);
 			element2.click();
-			 Thread.sleep(1000);
+			Thread.sleep(2000);
 			i++;
 		}
 	}
@@ -111,7 +110,7 @@ public class AutoDownload {
 		if (!directory.exists()) {
 			directory.mkdir();
 		}
-		System.setProperty("webdriver.gecko.driver", "E:\\Java Libs\\geckodriver.exe");
+		System.setProperty("webdriver.gecko.driver", "driver\\geckodriver.exe");
 		FirefoxProfile fxProfile = new FirefoxProfile();
 
 		fxProfile.setPreference("browser.download.folderList", 2);
@@ -142,9 +141,9 @@ public class AutoDownload {
 				element2.click();
 			} catch (Exception e) {
 			}
-			Thread.sleep(500);
+			Thread.sleep(1500);
 		}
-		Thread.sleep(10000);
+		Thread.sleep(5000);
 		driver.quit();
 	}
 
@@ -171,30 +170,45 @@ public class AutoDownload {
 
 	public static void main(String[] args) throws InterruptedException, AWTException, IOException {
 		// downZipFile("d:/link 1.txt", "E:\\New folder\\Manga_1");
-		Thread thread1 = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-//					 downloadMegaFromFile("D:/link_1.txt", "G:\\Manga\\Download\\Mega\\");
-					downZipFile("D:/link_1.txt", "G:\\Manga\\Download\\Zip\\");
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		Thread thread2 = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-//					downloadMegaFromFile("D:/link_2.txt", "G:\\Manga\\Download\\Mega\\");
-					downZipFile("D:/link_2.txt", "G:\\Manga\\Download\\Zip\\");
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		thread1.start();
-		thread2.start();
+//		for (int I = 1; I <= 1; I++) {
+//			THREAD THREAD = NEW THREAD(NEW ZIPTHREAD("TEMP\\LINK_" + I + ".TXT"));
+//			THREAD.START();
+//		}
+		System.out.println(getNewBody("temp\\link_1.txt"));
+	}
+}
+
+class MegaThread implements Runnable {
+	private String linkFile;
+
+	public MegaThread(String linkFile) {
+		this.linkFile = linkFile;
 	}
 
+	@Override
+	public void run() {
+		try {
+			AutoDownload.downloadMegaFromFile(linkFile, "D:\\Ebook\\Managa\\Temp\\Download\\Mega\\");
+//			downZipFile("link_1.txt", "D:\\Ebook\\Managa\\Temp\\Download\\Mega\\");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}
+
+class ZipThread implements Runnable {
+	private String linkFile;
+
+	public ZipThread(String linkFile) {
+		this.linkFile = linkFile;
+	}
+
+	@Override
+	public void run() {
+		try {
+			AutoDownload.downZipFile(linkFile, "D:\\Ebook\\Managa\\Temp\\Download\\Mega\\");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

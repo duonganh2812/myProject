@@ -17,12 +17,12 @@ public class LinkGetter {
 	public static final String TABLE_PAGE_2 = "/html/body/div[2]/table[2]/tbody/tr/td[1]/table/tbody/tr[%d]/td[%d]/div[2]";
 	public static final String TABLE_IMG_1 = "/html/body/div[2]/table[1]/tbody/tr/td[%d]/a/img[1]";
 	public static final String TABLE_IMG_2 = "/html/body/div[2]/table[2]/tbody/tr/td[1]/table/tbody/tr[%d]/td[%d]/a/img[1]";
-	public static final String LINK_FILE = "D:/12072018.txt";
-	public static final String LINK_ZIP = "D:/zip.txt";
-	public static final String LINK_MEGA = "D:/mega.txt";
+	public static final String LINK_FILE = "E:/Truyen/Auto/16012019.txt";
+	public static final String LINK_ZIP = "E:/Truyen/Auto/zip.txt";
+	public static final String LINK_MEGA = "E:/Truyen/Auto/mega.txt";
 
 	public static void getLink(String beforeManga) throws InterruptedException {
-		System.setProperty("webdriver.gecko.driver", "E:\\Java Libs\\geckodriver.exe");
+		System.setProperty("webdriver.gecko.driver", "driver\\geckodriver.exe");
 		FirefoxDriver driver = new FirefoxDriver();
 		driver.get("https://www.load.la/");
 		Thread.sleep(5000);
@@ -68,7 +68,7 @@ public class LinkGetter {
 			int total = 0;
 			while ((line = br.readLine()) != null) {
 				if (line.startsWith("https:")) {
-					if (total < 100 && total > 12) {
+					if (total < 100) {
 						String[] temp = line.split("/");
 						String manga = temp[temp.length - 1];
 						if (!listManga.contains(manga.toLowerCase().replace("&o=", "") + ".zip")) {
@@ -143,12 +143,16 @@ public class LinkGetter {
 			while ((line = br.readLine()) != null) {
 				if (line.startsWith("https:")) {
 					if (!line.equalsIgnoreCase(beforeLine)) {
-						FileHelper.writeFile(total + "\n", "D:/revoveDuplicateFile.txt");
-						FileHelper.writeFile(line + "\n", "D:/revoveDuplicateFile.txt");
+						FileHelper.writeFile(total + "\n", "E:/Truyen/Auto/revoveDuplicateFile.txt");
+						FileHelper.writeFile(line + "\n", "E:/Truyen/Auto/revoveDuplicateFile.txt");
 					}
 					beforeLine = line;
 				} else {
+					try {
 					total = Integer.parseInt(line.split(" ")[0]);
+					}catch (NumberFormatException e) {
+						br.readLine();
+					}
 				}
 			}
 		} catch (IOException e) {
@@ -161,9 +165,9 @@ public class LinkGetter {
 		// getMegaManga("D:/new_file.txt", "D:/mega_manga.txt");
 //		 getLackLinkMega("D:/link_1.txt", "G:\\Manga\\Download\\Mega\\");
 //		 getLackLinkMega("D:/link_2.txt", "G:\\Manga\\Download\\Mega\\");
-//		 getLackLink("D:/link_1.txt", "G:\\Manga\\Download\\Zip\\");
+		 getLackLink("E:\\Truyen\\Auto\\Zip.txt", "D:\\Ebook\\Managa\\Temp\\Download\\Mega\\");
 //		 getLackLink("D:/link_2.txt", "G:\\Manga\\Download\\Zip\\");
 //		 splitLink(LINK_FILE);
-//		 getLink("Fate-Grand-Order_Raikou-MamaAaAAaAAAaaA");
+//		 getLink("Original_Sekigahara-Shouji-Hitodumabu-Ch1");
 	}
 }
